@@ -8,8 +8,16 @@
 
 ## Local Development
 
-Run ```docker compose up```
+1. Starting the development app.
+Run ```docker compose -f compose.dev.yaml up```
+
+2. Stopping the development app.
+Run ```docker compose -f compose.dev.yaml down```
 
 ## Production Deployment
 
-Run `./mvnw spring-boot:run`
+1. Starting the production app.
+Run ```docker compose up```
+
+2. Stopping the production app.
+Run ```docker compose down```
