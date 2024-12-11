@@ -1,0 +1,32 @@
+name: javabank-backend-dev
+services:
+  server:
+    build: .
+    ports:
+      - 8080:8080
+      - 35729:35729
+      - 5005:5005
+    environment:
+      SPRING_DATASOURCE_URL: ${DB_URL}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      ENVIRONMENT: ${ENVIRONMENT}
+    volumes:
+      - ./:/app
+      - ./.m2:/root/.m2
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME} 
+    ports:
+      - "3306:3306" 
+    volumes:
+      - db-data:/var/lib/mysql 
+
+volumes:
+  db-data:
