@@ -20,7 +20,7 @@ import bank.backend.bms.models.UserRole;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/userroles")
+@RequestMapping("/api/roles")
 public class UserRoleController {
     @Autowired
     private UserRoleService userRoleService;
