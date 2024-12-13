@@ -82,4 +82,11 @@ public class CardUtils {
             throw new RuntimeException("Error decrypting CVV", e);
         }
     }
+
+    //Method to generate a pin instead of using a single pin for all users
+    public String generatePin() {
+        int pin = 1000 + secureRandom.nextInt(9000);
+        return String.valueOf(pin);
+    }
+
 }

@@ -2,6 +2,7 @@ package bank.backend.bms.services;
 
 import bank.backend.bms.dtos.CardResponseDto;
 import bank.backend.bms.dtos.ChangePinRequest;
+import bank.backend.bms.dtos.ResetPinRequest;
 import bank.backend.bms.models.Card;
 import bank.backend.bms.repositories.CardRepository;
 import bank.backend.bms.utils.CardUtils;
@@ -39,7 +40,7 @@ public class CardService {
         Card card = new Card();
         card.setCardNumber(generatedCardNumber);
         card.setCvv(cardUtils.encrypt(generatedCvv));
-        card.setPin(cardUtils.encrypt("45678"));
+        card.setPin(cardUtils.encrypt(cardUtils.generatePin()));
         card.setIssueDate(LocalDate.now());
         card.setExpireDate(LocalDate.now().plusYears(EXPIRY_PERIOD));
 
@@ -54,6 +55,17 @@ public class CardService {
                 cardUtils.decrypt(createdCard.getPin())
         );
 
+    }
+
+    public CardResponseDto getCard(Long id) {
+        Card existingCard = cardRepository.findById(id).orElseThrow(() -> new RuntimeException("Requested card does not exist"));
+        return new CardResponseDto(
+                existingCard.getId(),
+                existingCard.getCardNumber(),
+                cardUtils.decrypt(existingCard.getCvv()),
+                existingCard.getIssueDate(),
+                existingCard.getExpireDate()
+        );
     }
 
     public void deleteCard(Long cardId) {
@@ -88,7 +100,14 @@ public class CardService {
 
     }
 
+    //This service method should only be used by admins
+    public void resetPin(String cardNumber, ResetPinRequest resetPinRequest) {
+        var existingCard = cardRepository.findByCardNumber(cardNumber).orElseThrow(() -> new RuntimeException("Requested card does not exist"));
 
+        existingCard.setPin(cardUtils.encrypt(resetPinRequest.getNewPin()));
+
+        cardRepository.save(existingCard);
+    }
 
 
 
